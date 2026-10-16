@@ -1,0 +1,23 @@
+# Рабочие данные приложения: биометрические образцы, журналы, модель
+data/
+
+# Экспорт журнала
+logs_export_*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Среды разработки
+.idea/
+.vscode/
+*.swp
+
+# ОС
+Thumbs.db
+desktop.ini
+.DS_Store
