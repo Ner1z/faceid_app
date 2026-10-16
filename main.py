@@ -37,7 +37,10 @@ from PyQt6.QtWidgets import (
 )
 
 # ── Пути ──────────────────────────────────────────────────────────
-BASE_DIR = Path(__file__).parent
+if getattr(sys, "frozen", False):
+    BASE_DIR = Path(sys.executable).resolve().parent
+else:
+    BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 FACES_DIR = DATA_DIR / "faces"
 USERS_JSON = DATA_DIR / "users.json"
@@ -66,10 +69,15 @@ def save_json(path: Path, data):
 
 def ensure_cascade(filename: str) -> str:
     """Находит haarcascade XML: локально, в cv2.data или скачивает с GitHub (для OpenCV 5)."""
-    # 1) уже скачанный в data/
+    # 1) уже скачанный в data/ (рядом со скриптом или exe)
     local = DATA_DIR / filename
     if local.exists() and local.stat().st_size > 1000:
         return str(local)
+    # 1b) встроенный в exe (PyInstaller onefile)
+    if getattr(sys, "frozen", False):
+        bundled = Path(sys._MEIPASS) / "data" / filename
+        if bundled.exists() and bundled.stat().st_size > 1000:
+            return str(bundled)
     # 2) в пакете cv2
     try:
         cand = Path(cv2.data.haarcascades) / filename
